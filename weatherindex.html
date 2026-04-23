@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gelephu Weather</title>
+</head>
+<body>
+  <h1 id="temp">Loading…</h1>
+
+  <script>
+    async function loadGelephuWeather() {
+      const url = "https://api.open-meteo.com/v1/forecast?latitude=26.86&longitude=90.48&current_weather=true";
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const temp = data.current_weather.temperature;
+
+        document.querySelector("#temp").textContent = `Gelephu is ${temp}°C`;
+      } catch (err) {
+        document.querySelector("#temp").textContent = "Could not load weather";
+        console.error("Error fetching weather:", err);
+      }
+    }
+    loadGelephuWeather();
+  </script>
+</body>
+</html>

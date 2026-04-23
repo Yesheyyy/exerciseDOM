@@ -1,0 +1,70 @@
+<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Country Info</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #info {
+      margin-top: 20px;
+    }
+    img {
+      width: 150px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="status">Loading…</h1>
+
+  <label for="countrySelect">Choose a country: </label>
+  <select id="countrySelect">
+    <option value="bhutan" selected>Bhutan</option>
+    <option value="nepal">Nepal</option>
+    <option value="india">India</option>
+  </select>
+
+  <div id="info"></div>
+
+  <script>
+    async function loadCountry(name) {
+      const status = document.getElementById("status");
+      const info = document.getElementById("info");
+
+      status.textContent = "Loading…";
+      info.innerHTML = "";
+
+      const url = `https://restcountries.com/v3.1/name/${name}`;
+
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+
+        const data = await res.json();
+        const country = data[0];
+
+        status.textContent = country.name.common;
+        info.innerHTML = `
+          <p><strong>Capital:</strong> ${country.capital}</p>
+          <p><strong>Population:</strong> ${country.population.toLocaleString()}</p>
+          <p><strong>Region:</strong> ${country.region}</p>
+          <img src="${country.flags.svg}" alt="Flag of ${country.name.common}">
+        `;
+      } catch (err) {
+        status.textContent = "Error loading country data";
+        console.error("Fetch error:", err);
+      }
+    }
+
+    loadCountry("bhutan");
+
+    document.getElementById("countrySelect").addEventListener("change", (e) => {
+      loadCountry(e.target.value);
+    });
+  </script>
+</body>
+</html>
